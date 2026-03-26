@@ -1,26 +1,246 @@
 @import "tailwindcss";
 
+/* Class-based dark mode (next-themes sets .dark on <html>) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Mobile nav <details> chevron — avoid Tailwind group-open (breaks CSS parse in dev with details[open]) */
+.mobile-nav-what-we-do[open] .mobile-nav-what-we-do-chevron {
+  transform: rotate(180deg);
+}
+
+.mobile-nav-industries[open] .mobile-nav-industries-chevron {
+  transform: rotate(180deg);
+}
+
+.mobile-nav-who-we-are[open] .mobile-nav-who-we-are-chevron {
+  transform: rotate(180deg);
+}
+
+.mobile-nav-insights[open] .mobile-nav-insights-chevron {
+  transform: rotate(180deg);
+}
+
+/* Contact form: country picker like screenshot */
+.st-phone {
+  --react-international-phone-border-radius: 0.5rem;
+  --react-international-phone-border-color: rgba(226, 232, 240, 1);
+  --react-international-phone-background-color: #ffffff;
+  --react-international-phone-text-color: #0f172a;
+  --react-international-phone-placeholder-color: #94a3b8;
+  --react-international-phone-selected-dropdown-background-color: #f8fafc;
+  --react-international-phone-dropdown-item-background-color: #ffffff;
+  --react-international-phone-dropdown-item-text-color: #0f172a;
+  --react-international-phone-dropdown-item-background-color-hover: #f1f5f9;
+  --react-international-phone-dropdown-item-text-color-hover: #0f172a;
+  --react-international-phone-shadow: 0 14px 30px -18px rgba(2, 6, 23, 0.45);
+}
+
+.dark .st-phone {
+  --react-international-phone-border-color: rgba(51, 65, 85, 1);
+  --react-international-phone-background-color: rgba(2, 6, 23, 0.1);
+  --react-international-phone-text-color: #e2e8f0;
+  --react-international-phone-placeholder-color: rgba(148, 163, 184, 0.7);
+  --react-international-phone-selected-dropdown-background-color: rgba(15, 23, 42, 0.6);
+  --react-international-phone-dropdown-item-background-color: rgba(2, 6, 23, 0.98);
+  --react-international-phone-dropdown-item-text-color: #e2e8f0;
+  --react-international-phone-dropdown-item-background-color-hover: rgba(30, 41, 59, 0.65);
+  --react-international-phone-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.65);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Sticky nav (below announcement) — Hero uses negative margin + matching padding so gradient fills transparent header area */
+  --header-nav-overlap: 5.5rem;
+  /* Top offset for fixed mega menus (announcement + header pill + gap) — viewport-centered horizontally */
+  --mega-menu-top: 7.25rem;
+  /* Mobile fixed bottom nav height (used for full-viewport hero sizing). */
+  --mobile-bottom-nav: 4.75rem;
+  --background: #f0f2f7;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-hover: #fafbfc;
+  --muted: #64748b;
+  --border: rgba(15, 23, 42, 0.08);
+  --accent: #0066cc;
+  --accent-soft: rgba(0, 102, 204, 0.1);
+  --announcement: #002a6e;
+  --mesh-1: rgba(99, 102, 241, 0.15);
+  --mesh-2: rgba(14, 165, 233, 0.12);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --header-nav-overlap: 5.85rem;
+    --mega-menu-top: 7.5rem;
+    --mobile-bottom-nav: 0rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-nav-overlap: 6.25rem;
+    --mega-menu-top: 7.85rem;
+  }
+}
+
+.dark {
+  --background: #030712;
+  --foreground: #e8edf4;
+  --card: #0f172a;
+  --card-hover: #111c33;
+  --muted: #94a3b8;
+  --border: rgba(148, 163, 184, 0.12);
+  --accent: #38bdf8;
+  --accent-soft: rgba(56, 189, 248, 0.12);
+  --announcement: #0c1e3d;
+  --mesh-1: rgba(99, 102, 241, 0.25);
+  --mesh-2: rgba(14, 165, 233, 0.18);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html[lang^="ar"] body {
+  font-family: var(--font-noto-arabic), var(--font-inter), ui-sans-serif, system-ui,
+    sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+/* Ambient mesh (light) */
+.mesh-bg {
+  background-image: radial-gradient(
+      ellipse 120% 80% at 10% -20%,
+      var(--mesh-1),
+      transparent 50%
+    ),
+    radial-gradient(ellipse 100% 60% at 90% 0%, var(--mesh-2), transparent 45%);
+}
+
+/* Subtle page grain */
+.grain::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.dark .grain::before {
+  opacity: 0.06;
+}
+
+@keyframes beam-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(12deg);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate3d(2%, -1%, 0) rotate(10deg);
+    opacity: 0.65;
+  }
+}
+
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-beam {
+  animation: beam-drift 18s ease-in-out infinite;
+}
+
+.animate-float-soft {
+  animation: float-soft 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-beam,
+  .animate-float-soft {
+    animation: none;
+  }
+}
+
+.headline-hero {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.22;
+  text-wrap: balance;
+}
+
+.headline-section {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+@keyframes presence-line-move {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
+/* All hub→client routes: same dotted crawl */
+.presence-route-line {
+  stroke-dasharray: 9 13;
+  animation: presence-line-move 2.1s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .presence-route-line {
+    animation: none;
+    stroke-dasharray: 6 6;
+  }
+}
+
+/* HCL-style floating nav polish */
+.nav-pill-glow {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+    0 12px 40px -16px rgba(15, 23, 42, 0.12),
+    0 4px 16px -8px rgba(15, 23, 42, 0.08);
+}
+
+.dark .nav-pill-glow {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 12px 40px -12px rgba(0, 0, 0, 0.5),
+    0 4px 20px -8px rgba(0, 0, 0, 0.35);
 }
